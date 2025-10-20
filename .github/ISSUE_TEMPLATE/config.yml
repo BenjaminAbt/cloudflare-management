@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Question or Discussion
+    url: https://github.com/benabt/cloudflare-management/discussions
+    about: Ask questions or start discussions about the project
+  - name: 📖 Cloudflare API Documentation
+    url: https://developers.cloudflare.com/api/
+    about: Official Cloudflare API documentation
+  - name: 🔧 PowerShell Documentation
+    url: https://learn.microsoft.com/en-us/powershell/
+    about: Official PowerShell documentation
