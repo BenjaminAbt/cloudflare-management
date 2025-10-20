@@ -145,3 +145,239 @@ Retrieving next 30 deployments...
   Total deployments deleted: 44
 ═══════════════════════════════════════════════════════
 ```
+
+---
+
+## Disable Cloudflare Pages Access Policy
+
+File: `cf-pages-disable-access-policy.ps1`
+
+Disable or remove Cloudflare Access protection from Pages projects to make them publicly accessible.
+
+**Purpose**: Remove access restrictions from Cloudflare Pages projects, allowing public access to production and preview deployments.
+
+### Authentication
+
+This script requires a Cloudflare API Token with the following permissions:
+- `Cloudflare Pages:Edit` permission
+- `Access:Edit` permission (if using Access policies)
+
+### Key Features
+
+- ✅ **Safe Configuration**: Preserves other deployment settings
+- ✅ **Flexible Actions**: Choose to disable or completely remove Access policies
+- ✅ **Current Status Display**: Shows project information before making changes
+- ✅ **Retry Logic**: Built-in exponential backoff for API reliability
+- ✅ **WhatIf Support**: Test changes before applying with `-WhatIf`
+- ✅ **Comprehensive Logging**: Detailed output for auditing
+
+### Usage
+
+#### Basic Usage - Disable Access Policy
+
+Disable the Access Policy (keeps configuration but makes project public):
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken "your-cloudflare-api-token" `
+    -AccountId "your-account-id" `
+    -ProjectName "my-pages-project"
+```
+
+#### Remove Access Policy Completely
+
+Remove all Access-related configuration:
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken "your-cloudflare-api-token" `
+    -AccountId "your-account-id" `
+    -ProjectName "my-pages-project" `
+    -Action Remove
+```
+
+#### Test Changes with WhatIf
+
+Preview what would happen without making actual changes:
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken "your-cloudflare-api-token" `
+    -AccountId "your-account-id" `
+    -ProjectName "my-pages-project" `
+    -WhatIf
+```
+
+#### Verbose Output
+
+Enable detailed logging:
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken "your-cloudflare-api-token" `
+    -AccountId "your-account-id" `
+    -ProjectName "my-pages-project" `
+    -Verbose
+```
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `ApiToken` | String | Yes | - | Cloudflare API Token with required permissions |
+| `AccountId` | String | Yes | - | Your Cloudflare Account ID |
+| `ProjectName` | String | Yes | - | Name of the Cloudflare Pages project |
+| `Action` | String | No | Disable | Action to perform: 'Disable' or 'Remove' |
+| `MaxRetries` | Int | No | 5 | Maximum retry attempts on errors (1-20) |
+
+### Example Output
+
+```
+═══════════════════════════════════════════════════════
+  Cloudflare Pages Access Policy Management
+═══════════════════════════════════════════════════════
+Project:         my-project
+Account ID:      abc123def456789
+Action:          Disable
+═══════════════════════════════════════════════════════
+
+Current project status:
+  Name:              my-project
+  Created:           2024-08-15T10:30:00Z
+  Subdomain:         my-project
+  Production URL:    https://my-project.pages.dev
+
+Disabling Access Policy...
+✓ Access Policy disabled successfully!
+  - Production deployments are now publicly accessible
+  - Preview deployments are now publicly accessible
+
+═══════════════════════════════════════════════════════
+  ✓ Access Policy Disable completed!
+  Your Pages project is now publicly accessible
+═══════════════════════════════════════════════════════
+```
+
+### How It Works
+
+```
+┌─────────────────────────────────────┐
+│  1. Retrieve Project Configuration  │
+│     (Get current Access settings)   │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  2. Display Current Status          │
+│     (Show project info)             │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  3. Check Access Policy Status      │
+│     (Is it already disabled?)       │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  4. Perform Action                  │
+│     (Disable or Remove)             │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  5. Confirm Success                 │
+│     (Display result)                │
+└─────────────────────────────────────┘
+```
+
+### Actions Explained
+
+#### Disable Action (Default)
+- Removes access-enabled flags from deployment configurations
+- Preserves other compatibility flags and settings
+- Makes both production and preview deployments publicly accessible
+- Can be reversed by re-enabling Access
+
+#### Remove Action
+- Clears all deployment configuration settings
+- Removes all Access-related configuration
+- Results in default public access settings
+- More thorough cleanup than Disable
+
+### Prerequisites
+
+#### 1. Cloudflare API Token
+
+Create an API token with the following permissions:
+
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → **My Profile** → **API Tokens**
+2. Click **Create Token**
+3. Required Permissions:
+   - **Cloudflare Pages:Edit**
+   - **Access:Edit** (if using Access policies)
+4. Set appropriate Account Resources scope
+5. Copy and securely store the token
+
+#### 2. Find Your Account ID
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Select your account
+3. Go to **Workers & Pages**
+4. Copy the Account ID from the right sidebar or URL
+
+#### 3. Identify Your Project Name
+
+1. Go to **Workers & Pages** in Cloudflare Dashboard
+2. Click on the **Pages** tab
+3. Find your project name in the list
+
+### Use Cases
+
+#### Make Preview Deployments Public
+
+If preview deployments are behind Access and you want to share them:
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken $env:CF_API_TOKEN `
+    -AccountId $env:CF_ACCOUNT_ID `
+    -ProjectName "my-project"
+```
+
+#### Complete Access Removal
+
+Remove all Access configuration before deleting a project:
+
+```powershell
+.\cf-pages-disable-access-policy.ps1 `
+    -ApiToken $env:CF_API_TOKEN `
+    -AccountId $env:CF_ACCOUNT_ID `
+    -ProjectName "old-project" `
+    -Action Remove
+```
+
+#### Batch Processing Multiple Projects
+
+Disable Access for multiple projects:
+
+```powershell
+$projects = @("project1", "project2", "project3")
+
+foreach ($project in $projects) {
+    .\cf-pages-disable-access-policy.ps1 `
+        -ApiToken $env:CF_API_TOKEN `
+        -AccountId $env:CF_ACCOUNT_ID `
+        -ProjectName $project
+}
+```
+
+### Error Handling
+
+The script includes robust error handling:
+
+- **Exponential Backoff**: Automatically retries failed API calls
+- **API Error Messages**: Displays Cloudflare API error details
+- **Configuration Validation**: Checks current status before making changes
+- **Connection Issues**: Retries on network timeouts
+
