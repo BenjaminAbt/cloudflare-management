@@ -36,22 +36,22 @@
     Default: 5
 
 .EXAMPLE
-    .\Delete-CloudflareDeployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project"
+    .\cf-pages-delete-deployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project"
     
     Deletes all deployments (except production) without aliased deployments.
 
 .EXAMPLE
-    .\Delete-CloudflareDeployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project" -DeleteAliasedDeployments
+    .\cf-pages-delete-deployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project" -DeleteAliasedDeployments
     
     Deletes all deployments including aliased deployments.
 
 .EXAMPLE
-    .\Delete-CloudflareDeployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project" -DeploymentsPerPage 20 -MaxRetries 10
+    .\cf-pages-delete-deployments.ps1 -ApiToken "xxx" -AccountId "xxx" -ProjectName "my-project" -DeploymentsPerPage 20 -MaxRetries 10
     
     Deletes deployments with custom pagination and retry settings.
 
 .NOTES
-    Filename:   Delete-CloudflareDeployments.ps1
+    Filename:   cf-pages-delete-deployments.ps1
     Author:     Migrated from Node.js to PowerShell
     Version:    2.0.0
     Date:       2025-10-20

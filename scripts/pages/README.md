@@ -14,6 +14,10 @@ Bulk deletion tool for Cloudflare Pages deployments with intelligent safety feat
 
 **Purpose**: Clean up old or unnecessary deployments while protecting your production environment.
 
+### Authentication
+
+This script requires a Cloudflare API Token with the `Cloudflare Pages:Edit` permission.
+
 ### Key Features
 
 - ✅ **Production Protection**: Automatically identifies and preserves production deployments
